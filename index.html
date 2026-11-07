@@ -1,0 +1,978 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HEO JI HYE</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="허지혜 포트폴리오. 제조 현장에서 데이터 시각화까지, 이제 AI를 향해 나아가는 개발자.">
+<meta name="theme-color" content="#04060a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2304060a'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%239ccbff' stroke-width='2.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap">
+<style>
+/* Layout: one fixed WebGL stage behind everything. Sticky chapters and hairline
+   spec sheets scroll over it, and the particles change shape with the career. */
+:root{
+  --ink:#04060a;
+  --paper:#eef2f6;
+  --dim:#8a96a3;
+  --faint:rgba(238,242,246,.14);
+  --glow:#9ccbff;
+  --latin:"Geist","Noto Sans KR",system-ui,sans-serif;
+  --kr:"Noto Sans KR","Geist",system-ui,sans-serif;
+  --mono:"Geist Mono",ui-monospace,"Noto Sans KR",monospace;
+  --gutter:clamp(20px,2.4vw,40px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--ink);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--kr);font-weight:400;line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+ul{list-style:none;margin:0;padding:0}
+h1,h2,h3,p{margin:0;font-weight:400}
+:focus-visible{outline:1.5px solid var(--glow);outline-offset:3px;border-radius:2px}
+::selection{background:var(--glow);color:var(--ink)}
+.mono{font-family:var(--mono);font-size:13.5px;letter-spacing:.02em;text-transform:uppercase}
+.gutter{padding-left:max(var(--gutter),env(safe-area-inset-left,0px));padding-right:max(var(--gutter),env(safe-area-inset-right,0px))}
+
+/* Stage */
+#stage{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;
+  background:radial-gradient(60% 55% at 62% 42%,rgba(62,110,170,.20),transparent 70%)}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 45%,rgba(2,3,6,.72) 100%)}
+.grain{position:fixed;inset:-50%;z-index:60;pointer-events:none;opacity:.075;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+main,.footer{position:relative;z-index:2}
+
+/* Loader */
+.loader{position:fixed;inset:0;z-index:100;background:var(--ink);display:flex;flex-direction:column;justify-content:space-between;padding:var(--gutter)}
+.loader ul{color:var(--dim);line-height:1.9}
+.loader li{opacity:.25;transition:opacity .2s}
+.loader li.on{opacity:1;color:var(--paper)}
+.loader__n{align-self:flex-end;font-family:var(--latin);font-weight:300;font-size:min(30vw,44vh);line-height:.8;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+html.no-loader .loader{display:none}
+
+/* Nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding-top:calc(18px + env(safe-area-inset-top,0px));padding-bottom:18px;transition:opacity .35s,transform .35s}
+.nav.hide{opacity:0;transform:translateY(-14px);pointer-events:none}
+.nav__l,.nav__r{display:flex;align-items:center;gap:clamp(16px,2.6vw,40px)}
+.logo{font-family:var(--latin);font-weight:500;font-size:17px;letter-spacing:-.03em;white-space:nowrap}
+.logo sup{font-size:9px;vertical-align:super;margin-left:1px}
+.nav a.link{position:relative;font-family:var(--mono);font-size:13.5px;letter-spacing:.02em}
+.nav a.link::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.nav a.link:hover::after{transform:scaleX(1);transform-origin:left}
+.clock{white-space:nowrap;font-variant-numeric:tabular-nums}
+.clock i{font-style:normal;color:var(--dim);margin:0 10px}
+.pill{display:inline-flex;align-items:center;gap:10px;height:36px;padding:0 14px;border-radius:5px;font-family:var(--mono);font-size:13.5px;letter-spacing:.02em;
+  background:rgba(238,242,246,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:background .25s,color .25s;white-space:nowrap}
+.pill:hover,.pill--solid{background:var(--paper);color:var(--ink)}
+.pill--solid:hover{background:var(--glow)}
+.burger{width:36px;height:36px;border-radius:5px;background:rgba(238,242,246,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:grid;place-content:center;gap:4px;transition:background .25s}
+.burger:hover{background:rgba(238,242,246,.24)}
+.burger span{display:block;width:13px;height:1px;background:var(--paper)}
+.compact{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:50%;z-index:41;display:flex;align-items:center;gap:6px;padding:4px 4px 4px 14px;border-radius:7px;
+  background:rgba(8,11,16,.62);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transform:translate(-50%,-24px);opacity:0;pointer-events:none;transition:opacity .35s,transform .35s}
+.compact.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.compact .logo{font-size:14px;margin-right:8px}
+.compact .square{width:30px;height:30px;border-radius:4px;background:var(--paper);color:var(--ink);display:grid;place-content:center;font-family:var(--mono);font-size:15px;line-height:1;transition:background .25s}
+.compact .square:hover{background:var(--glow)}
+.compact .burger{width:30px;height:30px;border-radius:4px}
+.chip{position:fixed;right:max(var(--gutter),env(safe-area-inset-right,0px));bottom:calc(var(--gutter) + env(safe-area-inset-bottom,0px));z-index:30;padding:5px 9px;border-radius:4px;background:rgba(8,11,16,.62);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-family:var(--latin);font-size:13.5px;font-weight:500;letter-spacing:-.01em;transition:opacity .3s}
+.chip.hide{opacity:0}
+
+/* Menu */
+.menu{position:fixed;inset:0;z-index:50;background:rgba(4,6,10,.94);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;flex-direction:column;justify-content:space-between;
+  padding-top:calc(18px + env(safe-area-inset-top,0px));padding-bottom:calc(var(--gutter) + env(safe-area-inset-bottom,0px));visibility:hidden;opacity:0;transition:opacity .35s,visibility .35s}
+.menu.open{visibility:visible;opacity:1}
+.menu__top{display:flex;justify-content:space-between;align-items:center}
+.menu nav a{display:block;font-family:var(--latin);font-weight:400;font-size:min(13vw,15vh);line-height:1.02;letter-spacing:-.05em;text-transform:uppercase;transition:color .2s,transform .35s cubic-bezier(.2,.7,.2,1)}
+.menu nav a:hover{color:var(--glow);transform:translateX(12px)}
+.menu__foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--dim)}
+
+/* Hero */
+.hero{position:relative;height:100vh;height:100svh;min-height:440px;display:flex;flex-direction:column;justify-content:flex-end;
+  padding-bottom:calc(var(--gutter) + env(safe-area-inset-bottom,0px))}
+.lines{display:block}
+.l{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.l>span{display:block;will-change:transform}
+.hero h1{font-family:var(--latin);font-weight:400;font-size:min(17vw,25.5vh);line-height:.9;letter-spacing:-.055em;text-transform:uppercase}
+.hero__row{position:absolute;left:0;right:0;bottom:calc(var(--gutter) + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:repeat(12,minmax(0,1fr));align-items:end;pointer-events:none}
+.hero__cap{grid-column:9/13;align-self:end;padding-bottom:62px}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(4,6,10,.34),transparent 42%),linear-gradient(0deg,rgba(4,6,10,.6),transparent 36%)}
+.hero>*{position:relative}
+.hero .hero__row,.hero .hero__scroll,.hero .hero__cta{position:absolute}
+.hero__cap p{text-shadow:0 0 14px var(--ink),0 0 30px var(--ink),0 0 2px var(--ink);font-family:var(--kr);font-size:clamp(15.5px,1.3vw,19px);line-height:1.6;letter-spacing:-.02em;max-width:27em}
+.hero__scroll{position:absolute;left:50%;bottom:0;transform:translateX(-50%);white-space:nowrap;color:var(--dim)}
+.hero__cta{position:absolute;right:var(--gutter);bottom:0;margin-right:clamp(70px,8vw,120px);pointer-events:auto}
+
+/* Statement */
+.statement{position:relative;height:300vh}
+.statement__stick{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;gap:clamp(24px,6vh,56px)}
+.statement p.big{text-shadow:0 0 30px rgba(4,6,10,.8);font-family:var(--kr);font-weight:400;font-size:min(4.3vw,8.4vh);line-height:1.24;letter-spacing:-.04em;max-width:20em;margin-left:auto;margin-right:clamp(0px,8vw,140px)}
+.w{display:inline-block;will-change:opacity}
+.spec{position:absolute;left:0;right:0;bottom:calc(var(--gutter) + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--dim)}
+.spec b{font-weight:500;color:var(--paper)}
+.spec i{font-style:normal;margin:0 .7em;color:var(--dim)}
+
+/* Chapters */
+.chapter{position:relative;height:210vh}
+.chapter__stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding-top:80px;padding-bottom:calc(var(--gutter) + 6px + env(safe-area-inset-bottom,0px))}
+.ch-meta{color:var(--dim);margin-bottom:clamp(8px,1.8vh,18px);display:flex;gap:6px 20px;flex-wrap:wrap}
+.ch-meta b{font-weight:500;color:var(--paper)}
+.ch-title{font-family:var(--latin);font-weight:400;font-size:min(11.5vw,21vh);line-height:.9;letter-spacing:-.055em;text-transform:uppercase}
+.ch-body{white-space:pre-line;text-shadow:0 0 12px var(--ink),0 0 26px var(--ink);margin-top:clamp(12px,2.4vh,26px);max-width:34em;font-size:clamp(15.5px,1.2vw,18px);line-height:1.7;letter-spacing:-.015em;color:#c4ccd4}
+.callouts{position:absolute;inset:0;pointer-events:none}
+.co{position:absolute;display:flex;flex-direction:column;gap:2px;--len:clamp(40px,5vw,90px)}
+.co::before{content:"";position:absolute;right:100%;top:.72em;width:var(--len);margin-right:10px;height:1px;background:linear-gradient(90deg,var(--paper),rgba(238,242,246,.28));transform-origin:right;transform:scaleX(var(--s,1))}
+.co::after{content:"";position:absolute;right:calc(100% + var(--len) + 8px);top:calc(.72em - 2px);width:5px;height:5px;border-radius:50%;background:var(--paper);box-shadow:0 0 12px 2px var(--glow)}
+.co{text-shadow:0 0 10px var(--ink),0 0 22px var(--ink),0 0 2px var(--ink)}
+.co strong{font-family:var(--latin);font-weight:400;font-size:clamp(17px,2vw,30px);line-height:1.2;letter-spacing:-.035em;white-space:nowrap}
+.co span{font-family:var(--mono);font-size:14px;line-height:1.4;letter-spacing:.01em;color:#c4ccd4;max-width:22em}
+.co.a{top:17%;left:62%}.co.b{top:37%;left:76%}.co.c{top:58%;left:58%}.co.d{top:74%;left:78%}
+
+/* Section heads */
+.sec{position:relative;padding-top:clamp(90px,17vh,180px);padding-bottom:clamp(60px,10vh,120px)}
+.sec__head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:clamp(28px,6vh,64px)}
+.sec__head h2{font-family:var(--latin);font-size:min(15vw,24vh);line-height:.86;letter-spacing:-.06em;text-transform:uppercase}
+.sec__head .mono{color:var(--dim);text-align:right;padding-bottom:.6em;white-space:nowrap}
+
+/* Work list */
+.list{border-top:1px solid var(--faint)}
+.row{border-bottom:1px solid var(--faint)}
+.row summary{display:grid;grid-template-columns:minmax(120px,12%) minmax(0,1fr) minmax(130px,16%) 24px;gap:16px;align-items:baseline;padding:clamp(14px,2.2vh,22px) 0;cursor:pointer;list-style:none;transition:opacity .3s}
+.row summary::-webkit-details-marker{display:none}
+.row .yr,.row .co-name{font-family:var(--mono);font-size:14px;letter-spacing:.01em;color:var(--dim);font-variant-numeric:tabular-nums}
+.row h3{font-family:var(--kr);font-size:clamp(21px,3.1vw,50px);line-height:1.18;letter-spacing:-.05em;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.row .plus{font-family:var(--latin);font-size:20px;line-height:1;text-align:right;transition:transform .35s}
+.row[open] .plus{transform:rotate(45deg)}
+@media (hover:hover){
+  .list:hover .row:not(:hover):not([open]) summary{opacity:.34}
+  .row summary:hover h3{transform:translateX(14px)}
+}
+.detail{display:grid;grid-template-columns:minmax(120px,12%) minmax(0,1fr);gap:16px;padding:6px 0 clamp(28px,5vh,52px)}
+.detail__in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.9fr);gap:clamp(20px,4vw,64px)}
+.facts dt{font-family:var(--mono);font-size:13.5px;color:var(--dim);letter-spacing:.02em;text-transform:uppercase}
+.facts dd{margin:2px 0 14px;font-size:16px;line-height:1.55;letter-spacing:-.01em}
+.facts a{border-bottom:1px solid currentColor;word-break:break-all}
+.facts a:hover{color:var(--glow)}
+.duties{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:20px clamp(20px,3vw,40px);align-content:start}
+.duties h4{margin:0 0 6px;font-size:16px;font-weight:500;letter-spacing:-.015em}
+.duties li{position:relative;padding-left:12px;font-size:15.5px;line-height:1.6;color:#b6bfc8;letter-spacing:-.01em}
+.duties li::before{content:"";position:absolute;left:0;top:.75em;width:5px;height:1px;background:var(--dim)}
+.group-label{color:var(--dim);margin:clamp(40px,8vh,80px) 0 14px}
+
+/* Stack */
+.marquee{overflow:hidden;white-space:nowrap;font-family:var(--latin);font-size:min(11.5vw,19vh);line-height:1.06;letter-spacing:-.055em;padding-block:6px}
+.marquee div{display:inline-block;will-change:transform}
+.marquee em{font-style:normal;color:transparent;-webkit-text-stroke:1px rgba(238,242,246,.5)}
+.marquee i{font-style:normal;display:inline-block;width:.32em}
+.sheet{display:grid;margin-top:clamp(36px,8vh,80px);border-top:1px solid var(--faint)}
+.sheet>div{display:grid;grid-template-columns:minmax(120px,24%) minmax(0,1fr);gap:16px;padding:13px 0;border-bottom:1px solid var(--faint);align-items:baseline}
+.sheet dt{color:var(--dim)}
+.sheet dd{margin:0;font-family:var(--latin);font-size:clamp(15px,1.5vw,22px);line-height:1.35;letter-spacing:-.025em}
+
+/* Record */
+.record{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(28px,4vw,64px)}
+.record h3{color:var(--dim);margin-bottom:10px;font-family:var(--mono);font-size:13.5px;text-transform:uppercase}
+.record li{display:grid;grid-template-columns:minmax(0,1fr);gap:1px;padding:12px 0;border-top:1px solid var(--faint)}
+.record li span{font-family:var(--mono);font-size:13.5px;color:var(--dim);font-variant-numeric:tabular-nums}
+.record li b{font-weight:400;font-size:17px;letter-spacing:-.025em;line-height:1.45}
+.record li small{font-size:14.5px;color:var(--dim);letter-spacing:-.01em}
+
+/* Contact */
+.contact{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding-top:clamp(90px,17vh,160px);padding-bottom:clamp(16px,3vh,28px)}
+.contact__lead{font-size:clamp(15px,1.4vw,20px);letter-spacing:-.025em;max-width:30em;margin-bottom:clamp(18px,4vh,36px)}
+.mail{display:block;width:100%;text-align:left;font-family:var(--latin);font-weight:400;font-size:min(8.5vw,24vh);line-height:.98;letter-spacing:-.058em;transition:color .25s;overflow-wrap:anywhere}
+.mail:hover{color:var(--glow)}
+.contact__row{display:flex;justify-content:space-between;align-items:center;gap:12px 24px;flex-wrap:wrap;margin-top:clamp(18px,4vh,36px);padding-top:14px;border-top:1px solid var(--faint)}
+.contact__row .tel{font-family:var(--latin);font-size:clamp(18px,2vw,28px);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.contact__row .acts{display:flex;gap:8px;flex-wrap:wrap}
+.footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:14px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));color:var(--dim)}
+.footer a:hover{color:var(--paper)}
+
+/* Narrow */
+@media (max-width:860px){
+  .nav .link,.nav .clock,.nav .pill{display:none}
+  .hero .hero__row{position:relative;display:block;order:-1;margin-bottom:auto;padding:0;bottom:auto}
+  .hero{padding-top:calc(76px + env(safe-area-inset-top,0px))}
+  .hero__cap{padding:0;max-width:19em}
+  .hero h1{font-size:min(29vw,21vh);margin-bottom:58px}
+  .hero .hero__scroll{left:var(--gutter);bottom:calc(var(--gutter) + 10px);transform:none}
+  .hero .hero__cta{right:var(--gutter);bottom:var(--gutter);margin:0}
+  .statement p.big{font-size:min(7.2vw,5vh);margin:0;line-height:1.32}
+  .spec{justify-content:flex-start;line-height:1.9}
+  .chapter{height:190vh}
+  .chapter__stick{padding-bottom:calc(52px + env(safe-area-inset-bottom,0px))}
+  .ch-title{font-size:min(18vw,11vh)}
+  .ch-body{font-size:15px;line-height:1.58}
+  .callouts{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;margin-top:14px;padding-top:12px;border-top:1px solid var(--faint)}
+  .co{position:static}
+  .co::before,.co::after{display:none}
+  .co strong{font-size:16px;white-space:normal}
+  .co span{font-size:13px}
+  .sec__head{flex-direction:column;align-items:flex-start;gap:8px}
+  .sec__head .mono{text-align:left;padding:0}
+  .sec__head h2{font-size:min(23vw,20vh)}
+  .row summary{grid-template-columns:minmax(0,1fr) 22px;gap:2px 10px}
+  .row .yr{grid-column:1;grid-row:1}
+  .row h3{grid-column:1;grid-row:2;font-size:clamp(20px,6vw,28px)}
+  .row .co-name{grid-column:1;grid-row:3}
+  .row .plus{grid-column:2;grid-row:1/4;align-self:center}
+  .detail{grid-template-columns:minmax(0,1fr)}
+  .detail>span{display:none}
+  .detail__in{grid-template-columns:minmax(0,1fr)}
+  .marquee{font-size:19vw}
+  .sheet>div{grid-template-columns:minmax(0,1fr);gap:2px}
+  .record{grid-template-columns:minmax(0,1fr)}
+  .mail{font-size:8.2vw;overflow-wrap:normal;white-space:nowrap}
+  .chip{display:none}
+  .chapter__stick>.callouts{order:3}
+}
+@media (max-height:520px) and (min-width:861px){
+  .ch-body{font-size:14px;line-height:1.5;max-width:40em}
+  .co strong{font-size:18px}
+  .co span{font-size:13px}
+  .hero__cap{padding-bottom:26vh}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
+  .statement{height:auto;padding-block:20vh}
+  .statement__stick{position:static;height:auto}
+  .spec{position:static}
+  .chapter{height:auto;min-height:100vh}
+  .chapter__stick{position:relative;height:auto;min-height:100vh}
+}
+</style>
+</head>
+<body>
+<canvas id="stage" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="loader mono" id="loader" aria-hidden="true">
+  <ul>
+    <li>TCP/UDP LISTEN</li>
+    <li>JSON PARSE + VALIDATE</li>
+    <li>DB WRITE</li>
+    <li>REST API READY</li>
+    <li>RENDER</li>
+  </ul>
+  <div class="loader__n" id="loaderN">0</div>
+</div>
+
+<header class="nav gutter" id="nav">
+  <div class="nav__l">
+    <a class="logo" href="#top">HEO JI HYE<sup>®</sup></a>
+    <a class="link" href="#about">ABOUT</a>
+    <a class="link" href="#career">CAREER</a>
+    <a class="link" href="#work">WORK</a>
+    <a class="link" href="#stack">STACK</a>
+  </div>
+  <div class="nav__r">
+    <span class="clock mono">ANYANG, KR<i>|</i><span data-clock>--:-- KST</span></span>
+    <a class="pill" href="#contact">CONTACT <span aria-hidden="true">+</span></a>
+    <button class="burger" type="button" data-menu aria-label="메뉴 열기"><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="compact" id="compact">
+  <a class="logo" href="#top">HEO JI HYE<sup>®</sup></a>
+  <a class="square" href="#contact" aria-label="연락하기">+</a>
+  <button class="burger" type="button" data-menu aria-label="메뉴 열기"><span></span><span></span></button>
+</div>
+<div class="chip hide" id="chip" aria-hidden="true"></div>
+
+<div class="menu gutter" id="menu" role="dialog" aria-modal="true" aria-label="메뉴">
+  <div class="menu__top">
+    <span class="logo">HEO JI HYE<sup>®</sup></span>
+    <button class="pill" type="button" id="menuClose">CLOSE <span aria-hidden="true">×</span></button>
+  </div>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#career">Career</a>
+    <a href="#work">Work</a>
+    <a href="#stack">Stack</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="menu__foot mono"><span>gjwlgp9904@gmail.com</span><span data-clock>--:-- KST</span></div>
+</div>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero gutter" data-shape="0" data-label="Signal" data-lx="1.5" data-ly="0.45" data-mx="0" data-my="1.05" data-dim="1">
+    <h1 class="lines" aria-label="Heo Ji Hye">
+      <span class="l"><span>Heo</span></span>
+      <span class="l"><span>Ji</span></span>
+      <span class="l"><span>Hye</span></span>
+    </h1>
+    <div class="hero__row gutter">
+      <div class="hero__cap" data-fade>
+        <p>제조 현장에서 데이터 시각화까지,<br>이제 AI를 향해 한 걸음씩 나아가는 개발자입니다.</p>
+      </div>
+    </div>
+    <span class="hero__scroll mono" data-fade>[ Scroll to explore ]</span>
+    <a class="pill pill--solid hero__cta" href="#contact" data-fade>CONTACT <span aria-hidden="true">+</span></a>
+  </section>
+
+  <!-- STATEMENT -->
+  <section class="statement" id="about" data-shape="0" data-label="" data-lx="0" data-ly="0" data-mx="0" data-my="0" data-dim="0.34" data-zoom>
+    <div class="statement__stick gutter">
+      <p class="big" id="bigline">생산관리팀에서 10년 7개월을 일한 뒤 뒤늦게 개발을 시작했습니다. 그래서 더 꾸준히 배웠고, 지금은 데이터 위에 AI를 더하는 법을 공부하고 있습니다.</p>
+      <div class="spec gutter mono">
+        <span>웹 개발자 <i>·</i> 숭실대 정보과학대학원 석사과정</span>
+        <span><b>10년 7개월</b> 생산관리<i>·</i><b>9건</b> 실무 프로젝트<i>·</i><b>SQLD</b></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTERS -->
+  <div id="career"></div>
+  <div id="chapters"></div>
+
+  <!-- WORK -->
+  <section class="sec gutter" id="work" data-shape="5" data-label="Work" data-lx="2.6" data-ly="0" data-mx="0" data-my="0" data-dim="0.3">
+    <div class="sec__head">
+      <h2 class="lines"><span class="l"><span>Work</span></span></h2>
+      <span class="mono">실무 9건 + 개인·팀 프로젝트 2건<br>항목을 누르면 상세가 열립니다</span>
+    </div>
+    <div class="list" id="listMain"></div>
+    <p class="group-label mono">개인 졸업작품 + 팀 프로젝트</p>
+    <div class="list" id="listSide"></div>
+  </section>
+
+  <!-- STACK -->
+  <section class="sec" id="stack" data-shape="6" data-label="Stack" data-lx="0" data-ly="0" data-mx="0" data-my="0" data-dim="0.42">
+    <div class="sec__head gutter">
+      <h2 class="lines"><span class="l"><span>Stack</span></span></h2>
+    </div>
+    <div class="marquee" aria-hidden="true"><div data-mq="-1">Java<i></i><em>Spring Boot</em><i></i>eGovFrame<i></i><em>Node.js</em><i></i>Java<i></i><em>Spring Boot</em><i></i>eGovFrame<i></i><em>Node.js</em></div></div>
+    <div class="marquee" aria-hidden="true"><div data-mq="1" style="transform:translateX(-30%)"><em>Oracle</em><i></i>MSSQL<i></i><em>MySQL</em><i></i>PostgreSQL<i></i><em>Oracle</em><i></i>MSSQL<i></i><em>MySQL</em><i></i>PostgreSQL</div></div>
+    <dl class="sheet gutter" id="sheet" style="margin-left:0"></dl>
+  </section>
+
+  <!-- RECORD -->
+  <section class="sec gutter" id="record" data-shape="4" data-label="Record" data-lx="0" data-ly="0" data-mx="0" data-my="0" data-dim="0.26">
+    <div class="sec__head"><h2 class="lines"><span class="l"><span>Record</span></span></h2></div>
+    <div class="record" id="recordGrid"></div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact gutter" id="contact" data-shape="0" data-label="" data-lx="0" data-ly="1.1" data-mx="0" data-my="1.3" data-dim="0.8">
+    <p class="contact__lead">믿고 맡겨 주신다면, 끝까지 책임지고 만들겠습니다.</p>
+    <button class="mail" type="button" data-copy="gjwlgp9904@gmail.com" aria-label="이메일 주소 복사">gjwlgp9904@gmail.com</button>
+    <div class="contact__row">
+      <span class="acts">
+        <button class="pill pill--solid" type="button" data-copy="gjwlgp9904@gmail.com"><span data-copy-label>이메일 복사</span></button>
+        <a class="pill" href="mailto:gjwlgp9904@gmail.com">메일 보내기</a>
+      </span>
+    </div>
+  </section>
+</main>
+<footer class="footer gutter mono">
+  <span>© 2026 HEO JI HYE</span>
+  <span>Last updated 2026.11</span>
+  <span>ANYANG, KR · <span data-clock>--:-- KST</span></span>
+  <a href="#top">Back to top ↑</a>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+/* ============================================================
+   CONTENT: 내용을 고치려면 이 블록만 수정하면 됩니다.
+   ============================================================ */
+const CHAPTERS = [
+  { shape:1, label:"The Floor", title:["The","Floor"], period:"2011.07 — 2022.02", org:"서호전기(주)", team:"생산관리팀",
+    color:"warm",
+    body:"10년 7개월 동안 생산관리팀에서 일했습니다.\n2022년 Java Full-stack 개발자 양성 과정을 이수하며 개발자로 진로를 바꿨습니다.",
+    callouts:[["10년 7개월","생산관리팀"],["Java Full-stack 과정","2022.02 ~ 2022.08 이수"],["회원 기능 개발","팀 프로젝트 일인자"]] },
+  { shape:2, label:"The Line", title:["The","Line"], period:"2022.09 — 2023.08", org:"(주)엘앤코리아", team:"MES 개발팀",
+    body:"레이크머티리얼즈 MES 고도화와 NIPA 연구개발 프로젝트인 MSA 기반 MES 구축에 참여했습니다. 화면 구현부터 JPA 엔티티, MyBatis CRUD까지 맡았습니다.",
+    callouts:[["주요 화면 구현","JSP, jQuery"],["엔티티 매핑","JPA"],["CRUD 쿼리","MyBatis, MS-SQL"],["버전 관리와 협업","GitHub, SourceTree"]] },
+  { shape:3, label:"The City", title:["The","City"], period:"2023.08 — 2024.11", org:"(주)유아이네트웍스", team:"DT기술연구소",
+    body:"재생에너지 플랫폼, 물류정보 연계, GIS 스마트시티 관제를 개발했습니다. 요구사항 정의부터 UI 설계, DB, 데이터 시각화까지 함께 다뤘습니다.",
+    callouts:[["CCTV 조회","JavaScript, Node.js"],["밀도 그래프","인구, 차량 데이터"],["물류 데이터 시각화","amChart4, PostgreSQL"],["관리자 페이지","JSP, MySQL"]] },
+  { shape:4, label:"The Land", title:["The","Land"], period:"2024.12 — 2025.09", org:"(주)지트", team:"시스템사업본부 해외1팀",
+    body:"방글라데시 디지털 토지관리시스템 구축사업에 참여했습니다. 토지 등록 문서 Khatian의 조회와 소유권 변경, 기관별 지시·보고 흐름을 구현했습니다.",
+    callouts:[["Khatian 조회와 소유권 변경","Nexacro, Spring Boot"],["기관별 지시와 보고","Nexacro"],["토지 업무 DB 설계","PostgreSQL"],["화면 설계","Figma"]] },
+  { shape:5, label:"The Signal", title:["The","Signal"], period:"2025.11 — 재직 중", org:"(주)비디텍", team:"연구소 · 선임연구원",
+    body:"IoT 센서 데이터를 소켓으로 받아 검증하고 저장한 뒤 실시간 차트로 보여주는 모니터링 시스템을 개발했습니다. 사내 ERP의 개발과 유지보수도 맡고 있습니다.",
+    callouts:[["센서 데이터 수신","TCP/UDP 소켓, JSON 파싱"],["시계열 조회 API","Spring Boot, MariaDB"],["실시간 차트","Chart.js"],["ERP 빌드와 배포","Jenkins"]] },
+  { shape:6, label:"The Next", title:["The","Next"], period:"2026.03 — 재학 중", org:"숭실대학교 정보과학대학원", team:"소프트웨어공학과",
+    body:"석사과정에서 데이터와 인공지능 과목을 수강하고 있습니다. 웹 개발 경험 위에 AI를 더해 실제 서비스에 활용하는 것이 다음 목표입니다.",
+    callouts:[["석사과정","소프트웨어공학과"],["AI","패턴인식과 딥러닝, 인공지능시스템, 피지컬AI"],["Data","데이터모델링, 빅데이터시스템"]] }
+];
+
+const PROJECTS = [
+  { shape:5, yr:"2025 —", co:"(주)비디텍", title:"IoT 데이터 모니터링 시스템",
+    facts:{ "역할":"선임연구원 / 과장", "Backend":"Java, Spring Boot", "PoC":"Python", "Frontend":"JavaScript, Chart.js", "Database":"MariaDB", "Communication":"TCP/UDP, JSON" },
+    duties:[ ["수집과 검증",["TCP/UDP 소켓 통신 기반 IoT 데이터 수신 구조 설계","JSON 형식 센서 데이터 파싱 및 유효성 검증 로직 구현","Python 기반 PoC로 통신 및 데이터 처리 구조 검증"]],
+             ["서버와 화면",["Spring Boot 기반 REST API 서버 개발","기간별 센서 데이터를 조회하는 시계열 API 구현","MariaDB 기반 데이터 저장 구조 설계","Chart.js 기반 실시간 데이터 시각화 UI 구현","운영 적용을 고려한 시스템 구조로 개발 완료"]] ] },
+  { shape:2, yr:"2025 —", co:"(주)비디텍", title:"사내 ERP 개발 및 유지보수",
+    facts:{ "역할":"선임연구원 / 과장", "Backend":"Java, Spring Boot, MyBatis", "Frontend":"JSP, JavaScript, jQuery, jqxGrid", "Database":"MariaDB", "배포":"Jenkins" },
+    duties:[ ["주요 업무",["기존 미완성 ERP 시스템 인수 후 구조 분석 및 기능 개선","매출 및 수금 관리 기능 설계 및 개발","다회차 입금 처리 및 세금계산서 발행 로직 구현","이벤트 기반 알림 메시지 시스템 설계 및 공통 모듈 개발","MariaDB 기반 데이터 구조 설계 및 상태/이력 관리 기능 구현","Spring Boot, MyBatis 기반 백엔드 및 JSP UI 개발·유지보수","Jenkins에 빌드와 배포 작업을 구성해 ERP 배포 자동화"]] ] },
+  { shape:4, yr:"2024 — 25", co:"(주)지트", title:"방글라데시 디지털 토지관리시스템",
+    facts:{ "프로젝트":"방글라데시 디지털 토지관리시스템 구축사업", "기간":"2024.12.02 — 2025.09", "개발 환경":"Nexacro, Spring Boot, PostgreSQL, SVN", "참여 인원":"개발자 3인" },
+    duties:[ ["DB 설계",["settlement 시스템 DB 설계 참여","기관, 지시, 보고서, Khatian 등 주요 업무 흐름 기반의 DB 구조 설계"]],
+             ["UI/UX 구현",["Figma와 Nexacro로 실제 화면 구현 및 반응형 UI 구성","피드백 기반의 반복적인 UI/UX 개선"]],
+             ["프로토타입",["Khatian 신규 등록, 정보 수정, 삭제","기관별 업무 지시, 실행 요청, 결재 프로세스 UI 구현","Khatian(토지 등록 문서) 조회 및 소유권 변경"]],
+             ["기능 구현",["기관별 사전조사 지시 및 보고서 등록 처리","기관별 측량 지시 및 보고서 등록 처리","조회 조건을 추가한 Khatian 목록 조회"]] ] },
+  { shape:6, yr:"2023 — 24", co:"(주)유아이네트웍스", title:"분산형 재생에너지 통합 플랫폼",
+    facts:{ "프로젝트":"[KETEP] 분산형 재생에너지 시스템 개방형 통합 플랫폼 개발(RnD)", "기간":"2023.08.21 — 2024.11.28", "개발 환경":"HTML, CSS, JSP, JavaScript, jQuery, 전자정부프레임워크, MySQL, Git", "참여 인원":"개발자 2인" },
+    duties:[ ["요구사항 정의",["데이터 입력, 조회, 시각화, 파일 업로드/다운로드 등 주요 기능 정의","기능별 UI 화면의 흐름과 배치 설계","데이터 마켓플레이스 및 디지털 리빙랩 플랫폼 현황 조사"]],
+             ["UI/UX + DB",["사용자 편의성을 고려한 전체 인터페이스 설계 및 기능 배치","MySQL로 데이터 마켓플레이스, 디지털 리빙랩 DB 구조와 테이블 설계"]],
+             ["기능 구현",["회원가입 및 로그인","관리자 페이지: 회원, 회원 로그, 페이지, 데이터 관리","DB 추출 데이터 기반 차트, 그래프 대시보드","파일 업로드/다운로드 및 데이터 미리보기","CKEditor 4 기반 보고서 작성 기능"]] ] },
+  { shape:2, yr:"2024", co:"(주)유아이네트웍스", title:"물류정보 통합연계 플랫폼",
+    facts:{ "프로젝트":"물류정보 통합연계 플랫폼 및 융복합 물류시스템 실증 검증 인터페이스 기술 개발 (KAIA)", "기간":"2024.07.25 — 2024.11.28", "개발 환경":"HTML, CSS, JavaScript, Node.js, PostgreSQL" },
+    duties:[ ["주요 업무",["Figma로 화면 디자인 후 HTML, CSS, JavaScript로 구현","필요한 물류 데이터를 수집해 PostgreSQL에 저장","DB 데이터와 외부 API 데이터를 JOIN, 가공해 시스템에 맞게 변환","amChart4로 수집 데이터를 차트와 그래프로 시각화"]] ] },
+  { shape:3, yr:"2024", co:"(주)유아이네트웍스", title:"GIS Smart City 관제",
+    facts:{ "기간":"2024.05.08 — 2024.07.12", "개발 환경":"HTML, CSS, JavaScript, Node.js" },
+    duties:[ ["주요 업무",["Figma로 UI/UX 디자인 개발 및 제작","Node.js를 활용한 프론트엔드 기능 개발","CCTV 버튼 클릭 시 목록, 사진, 정보, 영상 조회 기능 추가","인구 밀도와 차량 밀도 데이터를 그래프로 시각화"]] ] },
+  { shape:0, yr:"2024", co:"(주)유아이네트웍스", title:"DT기술연구소 데모사이트 개편",
+    facts:{ "기간":"2024.01.05 — 2024.03.04", "사용 기술":"Figma, HTML, CSS, JavaScript, Node.js(fs)" },
+    duties:[ ["화면 설계 및 구현",["Figma로 데이터 입력, 수정, 조회 페이지 화면 설계","HTML, CSS, JavaScript로 화면 구현"]],
+             ["JSON 데이터 처리",["Node.js fs 모듈로 JSON 파일에 추가, 삭제, 수정, 조회 구현","조회 데이터를 목록 및 상세 페이지 화면에 출력"]] ] },
+  { shape:2, yr:"2023", co:"(주)엘앤코리아", title:"레이크머티리얼즈 MES 고도화",
+    facts:{ "기간":"2023.02.01 — 2023.08.11", "개발 환경":"HTML, CSS, JSP, JavaScript, jQuery, Spring Boot, MSSQL", "참여 인원":"4명" },
+    duties:[ ["주요 업무",["시스템 주요 화면 설계 및 구현","jQuery로 버튼 클릭, 데이터 입력 등 사용자 이벤트 처리","JPA로 엔티티와 테이블 매핑","MyBatis로 MS-SQL CRUD 쿼리 작성","GitHub, SourceTree로 버전 관리 및 협업"]] ] },
+  { shape:1, yr:"2022", co:"(주)엘앤코리아", title:"MSA 기반 MES 구축",
+    facts:{ "프로젝트":"NIPA 연구개발 프로젝트 (MSA 기반의 MES 구축)", "기간":"2022.11.01 — 2022.12.30", "개발 환경":"HTML, CSS, JSP, JavaScript, jQuery, Spring Boot, MSSQL", "참여 인원":"4명" },
+    duties:[ ["주요 업무",["시스템 주요 화면 설계 및 구현","jQuery로 버튼 클릭, 데이터 입력 등 사용자 이벤트 처리","JPA로 엔티티와 테이블 매핑","MyBatis로 MS-SQL CRUD 쿼리 작성","GitHub, SourceTree로 버전 관리 및 협업"]] ] }
+];
+
+const SIDE = [
+  { shape:4, yr:"2024", co:"졸업작품", title:"Travel Memories Album",
+    facts:{ "기간":"2024.03.25 — 2024.05.26", "GitHub":{ text:"mkbabo/gProject", href:"https://github.com/mkbabo/gProject" } },
+    duties:[ ["기획 의도",["가족, 친구들과 매년 여행을 다니며 계획을 공유하고 사진을 서로 내려받는 번거로움을 줄이기 위해 제작"]] ] },
+  { shape:3, yr:"2022", co:"팀 프로젝트", title:"일인자",
+    facts:{ "기간":"2022.06.20 — 2022.07.29", "역할":"엔지니어, 회원 기능 담당", "GitHub":{ text:"sweetSsun/NumberOne (Jihye)", href:"https://github.com/sweetSsun/NumberOne/tree/Jihye" } },
+    duties:[ ["기획 의도",["1인 가구 증가 추세에 맞춰 자취생들이 소통하고 중고거래, 공동구매를 할 수 있는 커뮤니티 사이트 제작"]],
+             ["구현 기능",["회원가입, 로그인, 로그아웃","ID & PW 찾기","회원정보 보기, 수정, 탈퇴","마이페이지, 1:1 문의, 회원 활동 정보"]] ] }
+];
+
+const STACK = [
+  ["백엔드","Java, Python, Spring Boot, 전자정부 표준 프레임워크(eGovFrame), Node.js"],
+  ["프론트엔드","HTML/CSS, JavaScript, jQuery, JSP, Nexacro"],
+  ["데이터베이스","Oracle, MSSQL, MySQL, PostgreSQL"],
+  ["디자인","Figma"],
+  ["버전 관리","Git, SourceTree, SVN"],
+  ["배포","Jenkins"],
+  ["개발 도구","Eclipse, Visual Studio Code, IntelliJ IDEA, DBeaver"],
+  ["AI 도구","Codex, Claude Code"],
+  ["문서 및 기타","Excel, PowerPoint, 한글(HWP), Google Sheets, AutoCAD"]
+];
+
+const RECORD = [
+  ["Career",[["2025.11 — 재직 중","비디텍","연구소"],["2024.12 — 2025.09","(주)지트","시스템사업본부 해외1팀"],["2023.08 — 2024.11","(주)유아이네트웍스","DT기술연구소"],["2022.09 — 2023.08","(주)엘앤코리아","MES 개발팀"],["2011.07 — 2022.02","서호전기(주)","생산관리팀"]]],
+  ["Education",[["2026.03 — 재학 중","숭실대학교 정보과학대학원","소프트웨어공학과"],["2023.02 — 2024.08","한양사이버대학교","컴퓨터공학과"],["2022.02 — 2022.08","Java Full-stack 개발자 양성 과정","이수"],["2009.03 — 2011.02","대림대학교","재료정보과"],["2006.03 — 2009.02","양명여자고등학교",""]]],
+  ["Certifications & Awards",[["자격","SQL개발자 (SQLD)",""],["수상","교내 졸업프로젝트 경진대회 우수상",""]]]
+];
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const $ = (s,c=document)=>c.querySelector(s), $$ = (s,c=document)=>[...c.querySelectorAll(s)];
+const esc = s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+
+$("#chapters").innerHTML = CHAPTERS.map(c=>{
+  const slots=["a","b","c","d"];
+  return `<section class="chapter" data-shape="${c.shape}" data-label="${esc(c.label)}" data-lx="1.75" data-ly="0.1" data-mx="0" data-my="1.55" data-dim="1">
+    <div class="chapter__stick gutter">
+      <div class="callouts">${c.callouts.map((k,i)=>`<div class="co ${slots[i]}"><strong>${esc(k[0])}</strong><span>${esc(k[1])}</span></div>`).join("")}</div>
+      <div class="ch-meta mono"><span>${esc(c.period)}</span><b>${esc(c.org)}</b><span>${esc(c.team)}</span></div>
+      <h2 class="ch-title lines">${c.title.map(t=>`<span class="l"><span>${esc(t)}</span></span>`).join("")}</h2>
+      <p class="ch-body">${esc(c.body)}</p>
+    </div>
+  </section>`}).join("");
+
+function rowHTML(p){
+  const facts = Object.entries(p.facts).map(([k,v])=>{
+    const val = (v&&v.href) ? `<a href="${esc(v.href)}" target="_blank" rel="noopener">${esc(v.text)} ↗</a>` : esc(v);
+    return `<dt>${esc(k)}</dt><dd>${val}</dd>`}).join("");
+  const duties = p.duties.map(([h,items])=>`<div><h4>${esc(h)}</h4><ul>${items.map(i=>`<li>${esc(i)}</li>`).join("")}</ul></div>`).join("");
+  return `<details class="row" data-row-shape="${p.shape}">
+    <summary><span class="yr">${esc(p.yr)}</span><h3>${esc(p.title)}</h3><span class="co-name">${esc(p.co)}</span><span class="plus" aria-hidden="true">+</span></summary>
+    <div class="detail"><span></span><div class="detail__in"><dl class="facts">${facts}</dl><div class="duties">${duties}</div></div></div>
+  </details>`;
+}
+$("#listMain").innerHTML = PROJECTS.map(rowHTML).join("");
+$("#listSide").innerHTML = SIDE.map(rowHTML).join("");
+$("#sheet").innerHTML = STACK.map(([k,v])=>`<div><dt class="mono">${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("");
+$("#recordGrid").innerHTML = RECORD.map(([h,rows])=>`<div><h3>${esc(h)}</h3><ul>${rows.map(r=>`<li><span>${esc(r[0])}</span><b>${esc(r[1])}</b>${r[2]?`<small>${esc(r[2])}</small>`:""}</li>`).join("")}</ul></div>`).join("");
+
+const big = $("#bigline");
+big.setAttribute("aria-label", big.textContent);
+big.innerHTML = big.textContent.split(" ").map(w=>`<span class="w" aria-hidden="true">${esc(w)}</span>`).join(" ");
+
+/* ============================================================
+   SMALL UI
+   ============================================================ */
+const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const IS_NARROW = ()=>innerWidth<=860;
+
+function tick(){
+  const s = new Intl.DateTimeFormat("en-US",{hour:"numeric",minute:"2-digit",hour12:true,timeZone:"Asia/Seoul"}).format(new Date());
+  $$("[data-clock]").forEach(n=>n.textContent = s+" KST");
+}
+tick(); setInterval(tick,20000);
+
+const menu = $("#menu");
+const setMenu = o=>{ menu.classList.toggle("open",o); if(window.__lenis) o?window.__lenis.stop():window.__lenis.start(); document.body.style.overflow=o?"hidden":""; if(o) $("#menuClose").focus(); };
+$$("[data-menu]").forEach(b=>b.addEventListener("click",()=>setMenu(true)));
+$("#menuClose").addEventListener("click",()=>setMenu(false));
+addEventListener("keydown",e=>{ if(e.key==="Escape") setMenu(false); });
+
+$$('a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{
+  const id=a.getAttribute("href"); const el=id==="#top"?document.body:$(id); if(!el) return;
+  e.preventDefault(); setMenu(false);
+  /* ABOUT lands where the statement is fully lit, not where its words are still dim. */
+  if(id==="#about"&&!REDUCE){
+    const y=el.getBoundingClientRect().top+scrollY+innerHeight*1.9;
+    if(window.__lenis) window.__lenis.scrollTo(y,{duration:1.6}); else scrollTo({top:y,behavior:"smooth"});
+    return;
+  }
+  if(window.__lenis) window.__lenis.scrollTo(el,{duration:1.6}); else el.scrollIntoView({behavior:REDUCE?"auto":"smooth"});
+}));
+
+$$("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{
+  const lbl=$("[data-copy-label]"), text=b.dataset.copy;
+  let ok=true;
+  try{ await navigator.clipboard.writeText(text); }
+  catch(err){ ok=false; const r=document.createRange(); r.selectNodeContents(b); const s=getSelection(); s.removeAllRanges(); s.addRange(r); }
+  lbl.textContent = ok?"복사됨":"선택됨, Ctrl+C";
+  setTimeout(()=>lbl.textContent="이메일 복사",1800);
+}));
+
+/* ============================================================
+   WEBGL: one point cloud, seven shapes
+   0 chip  1 gears  2 production line  3 city  4 cadastral land  5 sensor waves  6 neural shell
+   ============================================================ */
+const Stage = (function(){
+  if(!window.THREE) return null;
+  const canvas=$("#stage");
+  let gl; try{ gl=canvas.getContext("webgl",{antialias:false,alpha:true,powerPreference:"high-performance"}); }catch(e){}
+  if(!gl) return null;
+
+  const MOBILE = innerWidth<=860 || matchMedia("(pointer:coarse)").matches;
+  const N = MOBILE ? 42000 : 100000;
+  let seed=20110701;
+  const R=()=>{ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
+  const rr=(a,b)=>a+(b-a)*R();
+  const gauss=()=>{ let u=0,v=0; while(!u)u=R(); while(!v)v=R(); return Math.sqrt(-2*Math.log(u))*Math.cos(6.2832*v); };
+
+  const phase=new Float32Array(N).fill(-1);
+
+  /* 0. Sensor chip with etched ring and routed traces */
+  function chip(){
+    const a=new Float32Array(N*3), traces=[];
+    const pins=[]; const P=16;
+    for(let s=0;s<4;s++) for(let i=0;i<P;i++){
+      const u=-0.92+1.84*(i+.5)/P;
+      const d=[[1,0],[0,1],[-1,0],[0,-1]][s];
+      const n=[-d[1],d[0]];
+      pins.push({x:d[0]*1.02+n[0]*u,y:d[1]*1.02+n[1]*u,d,n,u});
+    }
+    pins.forEach(p=>{
+      for(let k=0;k<2;k++){
+        const pts=[[p.x+p.d[0]*.2,p.y+p.d[1]*.2]];
+        let x=pts[0][0],y=pts[0][1],dx=p.d[0],dy=p.d[1];
+        const lim=rr(3.4,6.6); const sign=(p.u>=0?1:-1)*(k?1:-1);
+        const seg=()=>{ const l=rr(.25,1.1); x+=dx*l;y+=dy*l;pts.push([x,y]); };
+        seg();
+        for(let g=0;g<5&&Math.hypot(x,y)<lim;g++){
+          const bend=(g%2===0)?sign*.7071:0;
+          const ax=p.d[0], ay=p.d[1];
+          if(bend){ dx=ax*.7071+p.n[0]*bend; dy=ay*.7071+p.n[1]*bend; } else { dx=ax; dy=ay; }
+          seg();
+        }
+        let len=0; const L=[0]; for(let i=1;i<pts.length;i++){ len+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]); L.push(len); }
+        traces.push({pts,L,len,off:R()*6.28});
+      }
+    });
+    for(let i=0;i<N;i++){
+      const r=R(); let x,y,z=0;
+      if(r<.17){ x=rr(-1,1);y=rr(-1,1); if(R()<.55){ if(R()<.5) x=Math.round(x*9)/9; else y=Math.round(y*9)/9; } z=.13; }
+      else if(r<.25){ const t=rr(-1,1),s=Math.floor(R()*4),m=R()<.5?1:.93; x=[t*m,m,t*m,-m][s]; y=[m,t*m,-m,t*m][s]; z=.13; }
+      else if(r<.335){ const t=R()*6.2832,q=R(); const rad=q<.6?.56:(q<.85?.42:.7); x=Math.cos(t)*rad+gauss()*.006; y=Math.sin(t)*rad+gauss()*.006; z=.16; }
+      else if(r<.385){ const p=pins[Math.floor(R()*pins.length)],t=R()*.22; x=p.x+p.d[0]*t+gauss()*.004; y=p.y+p.d[1]*t+gauss()*.004; z=.02; }
+      else if(r<.93){ const T=traces[Math.floor(R()*traces.length)]; const d=R()*T.len; let j=1; while(j<T.L.length-1&&T.L[j]<d) j++;
+        const f=(d-T.L[j-1])/Math.max(T.L[j]-T.L[j-1],1e-4); x=T.pts[j-1][0]+(T.pts[j][0]-T.pts[j-1][0])*f; y=T.pts[j-1][1]+(T.pts[j][1]-T.pts[j-1][1])*f; x+=gauss()*.004;y+=gauss()*.004; phase[i]=d*1.6+T.off; }
+      else { x=rr(-7,7);y=rr(-5,5);z=rr(-1.6,1.3); }
+      a[i*3]=x;a[i*3+1]=y;a[i*3+2]=z;
+    }
+    return a;
+  }
+
+  /* 1. Meshing gears */
+  function gears(){
+    const a=new Float32Array(N*3);
+    const G=[{x:-.75,y:-.15,R:1.8,t:20,w:.34,o:0},{x:2.03,y:.75,R:1.03,t:12,w:.26,o:.13},{x:.82,y:2.15,R:.62,t:8,w:.2,o:.3}];
+    const prof=(th,g)=>{ const q=((th+g.o)*g.t/6.2832)%1; const v=q<0?q+1:q; const k=v<.2?v/.2:v<.5?1:v<.7?1-(v-.5)/.2:0; return g.R+k*.22; };
+    for(let i=0;i<N;i++){
+      const u=R(); const g=u<.62?G[0]:u<.9?G[1]:G[2];
+      const th=R()*6.2832; const r=R(); let rad,z;
+      if(r<.42){ rad=prof(th,g); z=rr(-g.w,g.w); }
+      else if(r<.66){ rad=g.R*.42+Math.pow(R(),.7)*(prof(th,g)-g.R*.42); z=R()<.5?g.w:-g.w; if(R()<.4) rad=Math.round(rad/(g.R*.12))*(g.R*.12); }
+      else if(r<.84){ rad=g.R*.42; z=rr(-g.w,g.w); }
+      else if(r<.94){ rad=g.R*.2; z=rr(-g.w*1.6,g.w*1.6); }
+      else { rad=prof(th,g)*.98; z=(R()<.5?1:-1)*g.w; }
+      a[i*3]=g.x+Math.cos(th)*rad+gauss()*.005; a[i*3+1]=g.y+Math.sin(th)*rad+gauss()*.005; a[i*3+2]=z;
+    }
+    return a;
+  }
+
+  /* 2. Production line: modules on conveyors */
+  function line(){
+    const a=new Float32Array(N*3); const B=[];
+    for(let r=0;r<4;r++) for(let c=0;c<8;c++){
+      const h=rr(.25,1.35)*(R()<.2?1.5:1);
+      B.push({x:-3.85+c*1.1,z:-1.95+r*1.3,w:rr(.32,.46),d:rr(.32,.5),h});
+    }
+    for(let i=0;i<N;i++){
+      const r=R(); let x,y,z;
+      if(r<.86){
+        const b=B[Math.floor(R()*B.length)], e=R();
+        const sx=R()<.5?-1:1, sz=R()<.5?-1:1, sy=R()<.5?0:1;
+        if(e<.28){ x=b.x+sx*b.w;z=b.z+sz*b.d;y=R()*b.h; }
+        else if(e<.52){ x=b.x+rr(-b.w,b.w);z=b.z+sz*b.d;y=sy*b.h; }
+        else if(e<.76){ x=b.x+sx*b.w;z=b.z+rr(-b.d,b.d);y=sy*b.h; }
+        else if(e<.92){ x=b.x+rr(-b.w,b.w);z=b.z+rr(-b.d,b.d);y=b.h; }
+        else { x=b.x+rr(-b.w,b.w);z=b.z+b.d;y=Math.round(R()*b.h*9)/9; }
+      } else if(r<.97){ const row=Math.floor(R()*4); x=rr(-4.6,4.6); z=-1.95+row*1.3+(R()<.5?.62:-.62)*.98; y=0; if(R()<.35) x=Math.round(x*7)/7; }
+      else { x=rr(-5,5);y=rr(-.1,3);z=rr(-3,3); }
+      a[i*3]=x+gauss()*.004;a[i*3+1]=y-.55+gauss()*.004;a[i*3+2]=z+gauss()*.004;
+    }
+    return a;
+  }
+
+  /* 3. City with GIS scan rings */
+  function city(){
+    const a=new Float32Array(N*3); const B=[]; const S=15;
+    for(let i=0;i<S;i++) for(let j=0;j<S;j++){
+      if((i+1)%5===0||(j+1)%5===0) continue;
+      const x=(i-S/2)*.5,z=(j-S/2)*.5,dc=Math.hypot(x,z);
+      if(dc>3.9) continue;
+      B.push({x,z,w:rr(.1,.2),d:rr(.1,.2),h:Math.pow(R(),2.6)*3*Math.max(.18,1-dc/4.2)+.06});
+    }
+    for(let i=0;i<N;i++){
+      const r=R(); let x,y,z;
+      if(r<.76){
+        const b=B[Math.floor(R()*B.length)],e=R(),sx=R()<.5?-1:1,sz=R()<.5?-1:1;
+        if(e<.36){ x=b.x+sx*b.w;z=b.z+sz*b.d;y=R()*b.h; }
+        else if(e<.8){ y=Math.round(R()*b.h/.09)*.09; if(R()<.5){ x=b.x+sx*b.w;z=b.z+rr(-b.d,b.d);} else { x=b.x+rr(-b.w,b.w);z=b.z+sz*b.d; } }
+        else { x=b.x+rr(-b.w,b.w);z=b.z+rr(-b.d,b.d);y=b.h; }
+      } else if(r<.9){ const t=R()*6.2832,rad=[1.15,2.3,3.5,4.4][Math.floor(R()*4)]; x=Math.cos(t)*rad;z=Math.sin(t)*rad;y=0; }
+      else { const ax=R()<.5; const p=rr(-4.6,4.6),q=(Math.floor(R()*3)*5-5+2)*.5-.25; x=ax?p:q;z=ax?q:p;y=0; }
+      a[i*3]=x;a[i*3+1]=y-.8;a[i*3+2]=z;
+    }
+    return a;
+  }
+
+  /* 4. Cadastral land parcels with a river */
+  function land(){
+    const a=new Float32Array(N*3); const K=64,S=[];
+    for(let i=0;i<K;i++) S.push([rr(-5,5),rr(-3.6,3.6),rr(0,1)]);
+    const ground=(x,z)=>.2*Math.sin(x*.7+1)*Math.cos(z*.6);
+    /* Boundary points are baked once into a pool, so page load stays fast. */
+    const pool=[];
+    while(pool.length<7000){
+      const x=rr(-5,5),z=rr(-3.6,3.6); let d1=1e9,d2=1e9,best=0;
+      for(let k=0;k<K;k++){ const dx=x-S[k][0],dz=z-S[k][1],d=dx*dx+dz*dz; if(d<d1){d2=d1;d1=d;best=k;} else if(d<d2) d2=d; }
+      if(Math.sqrt(d2)-Math.sqrt(d1)<.03) pool.push([x,z,best]);
+    }
+    for(let i=0;i<N;i++){
+      const r=R(); let x,z,y;
+      if(r<.75){
+        const q=pool[Math.floor(R()*pool.length)];
+        x=q[0]+gauss()*.008; z=q[1]+gauss()*.008;
+        y=ground(x,z)+S[q[2]][2]*.06;
+      } else if(r<.92){
+        x=rr(-5,5);z=rr(-3.6,3.6); let d1=1e9,best=0; for(let k=0;k<K;k++){ const dx=x-S[k][0],dz=z-S[k][1],d=dx*dx+dz*dz; if(d<d1){d1=d;best=k;} }
+        const g=.09+S[best][2]*.1; const ang=S[best][2]*3.14; const c=Math.cos(ang),s=Math.sin(ang); const u=x*c+z*s; const m=Math.round(u/g)*g; const v=-x*s+z*c; x=m*c-v*s; z=m*s+v*c; y=ground(x,z)+S[best][2]*.06;
+      } else { x=rr(-5.2,5.2); z=Math.sin(x*.9)*.8+Math.sin(x*2.1+1)*.22+gauss()*.05+(R()<.5?.07:-.07); y=ground(x,z)-.03; }
+      a[i*3]=x;a[i*3+1]=y;a[i*3+2]=z;
+    }
+    return a;
+  }
+
+  /* 5. Sensor time series */
+  function waves(){
+    const a=new Float32Array(N*3); const L=18,C=[];
+    for(let i=0;i<L;i++) C.push({z:-2.8+5.6*i/(L-1),a:rr(.15,.55),f:rr(.7,1.8),p:rr(0,6.28),f2:rr(2.4,5.6),s:rr(-4,4),h:rr(.6,1.6)*(R()<.55?1:.1)});
+    const Y=(c,x)=>c.a*Math.sin(x*c.f+c.p)+c.a*.35*Math.sin(x*c.f2+c.p*2)+c.h*Math.exp(-Math.pow((x-c.s)*3.2,2));
+    for(let i=0;i<N;i++){
+      const r=R(); let x,y,z;
+      if(r<.82){ const c=C[Math.floor(R()*L)]; x=rr(-4.7,4.7); y=Y(c,x)+gauss()*.006; z=c.z; }
+      else if(r<.93){ x=rr(-4.7,4.7); z=rr(-2.9,2.9); if(R()<.5) x=Math.round(x/.47)*.47; else z=Math.round(z/.56)*.56; y=-1.05; }
+      else { const c=C[Math.floor(R()*L)],q=Math.round(rr(-4.7,4.7)/.47)*.47; x=q; z=c.z; y=-1.05+R()*(Y(c,q)+1.05); }
+      a[i*3]=x;a[i*3+1]=y;a[i*3+2]=z;
+    }
+    return a;
+  }
+
+  /* 6. Neural shell */
+  function neural(){
+    const a=new Float32Array(N*3); const M=170,nodes=[];
+    for(let i=0;i<M;i++){ const y=1-2*(i+.5)/M,r=Math.sqrt(1-y*y),t=2.39996*i; const q=2.15+rr(-.32,.32); nodes.push([Math.cos(t)*r*q*1.12,y*q*.96,Math.sin(t)*r*q]); }
+    const E=[];
+    nodes.forEach((n,i)=>{ const o=nodes.map((m,j)=>[Math.hypot(n[0]-m[0],n[1]-m[1],n[2]-m[2]),j]).sort((p,q)=>p[0]-q[0]).slice(1,4+Math.floor(R()*3)); o.forEach(p=>E.push([i,p[1]])); });
+    for(let i=0;i<8;i++) E.push([Math.floor(R()*M),Math.floor(R()*M)]);
+    for(let i=0;i<N;i++){
+      const r=R(); let x,y,z;
+      if(r<.27){ const n=nodes[Math.floor(R()*M)],s=.045; x=n[0]+gauss()*s;y=n[1]+gauss()*s;z=n[2]+gauss()*s; }
+      else if(r<.9){ const e=E[Math.floor(R()*E.length)],A=nodes[e[0]],B=nodes[e[1]],t=R(); const sag=1-.14*Math.sin(t*3.1416); x=(A[0]+(B[0]-A[0])*t)*sag;y=(A[1]+(B[1]-A[1])*t)*sag;z=(A[2]+(B[2]-A[2])*t)*sag; x+=gauss()*.004;y+=gauss()*.004;z+=gauss()*.004; }
+      else { const u=R()*6.2832,v=Math.acos(2*R()-1),q=rr(.4,3.5); x=q*Math.sin(v)*Math.cos(u);y=q*Math.cos(v);z=q*Math.sin(v)*Math.sin(u); }
+      a[i*3]=x;a[i*3+1]=y;a[i*3+2]=z;
+    }
+    return a;
+  }
+
+  const chipArr=chip();
+  const rnd=new Float32Array(N*3);
+  for(let i=0;i<N;i++){ rnd[i*3]=Math.random(); rnd[i*3+1]=Math.random(); rnd[i*3+2]=phase[i]; }
+
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute("position",new THREE.BufferAttribute(chipArr,3));
+  for(let k=1;k<7;k++) geo.setAttribute("p"+k,geo.attributes.position);
+  /* The other shapes are built between frames so the loader never freezes. */
+  [gears,line,city,land,waves,neural].forEach((fn,i)=>setTimeout(()=>geo.setAttribute("p"+(i+1),new THREE.BufferAttribute(fn(),3)),80+i*70));
+  geo.setAttribute("aR",new THREE.BufferAttribute(rnd,3));
+  geo.boundingSphere=new THREE.Sphere(new THREE.Vector3(),40);
+
+  const U={uFrom:{value:0},uTo:{value:0},uP:{value:1},uTime:{value:0},uPx:{value:1000},uFocus:{value:9},
+    uA:{value:new THREE.Color("#9ccbff")},uB:{value:new THREE.Color("#ffffff")},uDim:{value:0},uSweep:{value:0}};
+  const uniforms=(size,alpha)=>({...U,uSize:{value:size},uAlpha:{value:alpha}});
+  const vs=`
+    attribute vec3 p1,p2,p3,p4,p5,p6; attribute vec3 aR;
+    uniform float uFrom,uTo,uP,uTime,uPx,uFocus,uSize,uSweep;
+    varying float vA; varying float vMix; varying float vPulse;
+    float eq(float a,float b){return 1.0-step(.5,abs(a-b));}
+    vec3 pick(float k){return position*eq(k,0.)+p1*eq(k,1.)+p2*eq(k,2.)+p3*eq(k,3.)+p4*eq(k,4.)+p5*eq(k,5.)+p6*eq(k,6.);}
+    void main(){
+      float s=smoothstep(0.,1.,clamp(uP*1.55-aR.x*.55,0.,1.));
+      vec3 a=pick(uFrom),b=pick(uTo);
+      vec3 pos=mix(a,b,s);
+      float m=sin(s*3.14159);
+      float t=uTime;
+      pos+=m*vec3(sin(t*.9+aR.y*6.28+pos.y*1.6),cos(t*.8+aR.x*6.28+pos.z*1.6),sin(t*.7+aR.y*12.5+pos.x*1.6))*.62;
+      pos+=.014*vec3(sin(t*.55+aR.x*50.),cos(t*.47+aR.y*50.),sin(t*.61+aR.x*90.));
+      float w0=eq(uTo,0.)*s+eq(uFrom,0.)*(1.-s);
+      float pulse=step(0.,aR.z)*pow(.5+.5*sin(aR.z*2.2-t*2.1),46.)*w0;
+      float band=exp(-pow((pos.x-uSweep)*1.1,2.));
+      vPulse=pulse+band*.36*(1.-w0*.7);
+      vec4 mv=modelViewMatrix*vec4(pos,1.);
+      float dist=-mv.z;
+      float coc=clamp(abs(dist-uFocus)*.34-.2,0.,1.);
+      vA=(1./(1.+coc*coc*16.))*(.55+aR.y*.45)*(1.+pulse*1.5);
+      vMix=aR.x;
+      gl_PointSize=clamp((uSize*(.65+aR.y*.7)*(1.+pulse*.35)+coc*.06)*uPx/dist,1.,64.);
+      gl_Position=projectionMatrix*mv;
+    }`;
+  const fs=`
+    precision mediump float;
+    uniform vec3 uA,uB; uniform float uAlpha,uDim;
+    varying float vA,vMix,vPulse;
+    void main(){
+      float r=length(gl_PointCoord-.5)*2.;
+      if(r>1.) discard;
+      float f=pow(1.-r,1.5);
+      vec3 c=mix(uA,uB,vMix*vMix);
+      c=mix(c,vec3(1.),clamp(vPulse,0.,1.));
+      gl_FragColor=vec4(c,1.)*f*vA*uAlpha*uDim*(1.+vPulse);
+    }`;
+  const blend={transparent:true,depthWrite:false,depthTest:false,blending:THREE.CustomBlending,blendEquation:THREE.AddEquation,blendSrc:THREE.OneFactor,blendDst:THREE.OneFactor};
+  const sizeBase=MOBILE?.0135:.0115;
+  const fine=new THREE.ShaderMaterial({vertexShader:vs,fragmentShader:fs,uniforms:uniforms(sizeBase,.62),...blend});
+  const halo=new THREE.ShaderMaterial({vertexShader:vs,fragmentShader:fs,uniforms:uniforms(sizeBase*8,.022),...blend});
+
+  const renderer=new THREE.WebGLRenderer({canvas,context:gl,antialias:false,alpha:true,premultipliedAlpha:true});
+  renderer.setClearColor(0x000000,0);
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(34,1,.1,80);
+  const group=new THREE.Group();
+  const ptsFine=new THREE.Points(geo,fine); ptsFine.frustumCulled=false;
+  const geoHalo=new THREE.BufferGeometry(); geoHalo.attributes=geo.attributes; geoHalo.setDrawRange(0,Math.floor(N/9)); geoHalo.boundingSphere=geo.boundingSphere;
+  const ptsHalo=new THREE.Points(geoHalo,halo); ptsHalo.frustumCulled=false;
+  group.add(ptsHalo); group.add(ptsFine); scene.add(group);
+
+  /* per-shape framing: camera distance, tilt, slow spin */
+  const POSE=[
+    {z:8.4,rx:-.82,ry:0,rz:.34,spin:.012},
+    {z:9.2,rx:-.42,ry:.42,rz:.1,spin:0,roll:.09},
+    {z:10,rx:.46,ry:-.62,rz:0,spin:.02},
+    {z:11,rx:.5,ry:.5,rz:0,spin:.05},
+    {z:13.2,rx:.86,ry:.34,rz:0,spin:.012},
+    {z:12,rx:.3,ry:-.5,rz:0,spin:.016},
+    {z:8.6,rx:.15,ry:0,rz:0,spin:.09}
+  ];
+  const COL=[["#8fc4ff","#f1f8ff"],["#ff9d5c","#ffe9d6"],["#ffc98a","#fff3e3"],["#6fd0e6","#eafcff"],["#b7d98f","#f6ffe0"],["#6fb1ff","#e2f1ff"],["#a99cff","#f5f0ff"]].map(c=>c.map(h=>new THREE.Color(h)));
+
+  const st={from:0,to:0,p:1,anim:false,pending:null,t:0,dur:1.6};
+  const cur={rx:POSE[0].rx,ry:POSE[0].ry,rz:POSE[0].rz,z:POSE[0].z,x:0,y:0,dim:0,spin:0,roll:0};
+  const tgt={x:0,y:0,dim:1,zoom:0};
+  let mx=0,my=0,cmx=0,cmy=0,spinAcc=0,rollAcc=0;
+  addEventListener("pointermove",e=>{ mx=e.clientX/innerWidth-.5; my=e.clientY/innerHeight-.5; },{passive:true});
+
+  function setShape(i){
+    if(st.anim){ st.pending=i; return; }
+    if(i===st.to) return;
+    st.from=st.to; st.to=i; st.p=0; st.t=0; st.anim=true; st.pending=null; spinAcc*=.5;
+    U.uFrom.value=st.from; U.uTo.value=st.to;
+    if(REDUCE){ st.p=1; st.anim=false; }
+  }
+  function resize(){
+    const w=innerWidth,h=innerHeight;
+    const dpr=Math.min(devicePixelRatio||1,quality?(MOBILE?1.5:1.75):1);
+    renderer.setPixelRatio(dpr); renderer.setSize(w,h,false);
+    cam.aspect=w/h; cam.updateProjectionMatrix();
+    U.uPx.value=h*dpr/(2*Math.tan(cam.fov*Math.PI/360));
+    fit=Math.max(1,1.25/Math.max(cam.aspect,.5)*(cam.aspect<1?.82:.8));
+  }
+  let quality=true,fit=1;
+  resize(); addEventListener("resize",resize);
+
+  let last=performance.now(),frames=0,acc=0,running=true;
+  document.addEventListener("visibilitychange",()=>{ running=!document.hidden; if(running){ last=performance.now(); requestAnimationFrame(loop);} });
+  function loop(now){
+    if(!running) return;
+    requestAnimationFrame(loop);
+    const dt=Math.max(0,Math.min((now-last)/1000,.08)); last=now;
+    if(frames<140){ frames++; if(frames>30) acc+=dt; if(frames===140&&acc/110>.04&&quality){ quality=false; geo.setDrawRange(0,Math.floor(N*.5)); resize(); } }
+    U.uTime.value+=dt;
+    U.uSweep.value=-7+((U.uTime.value*1.4)%14);
+    if(st.anim){
+      st.t+=dt; const q=Math.min(st.t/st.dur,1); st.p=q*q*(3-2*q);
+      if(q>=1){ st.p=1; st.anim=false; const n=st.pending; st.pending=null; if(n!==null&&n!==st.to) setShape(n); }
+    }
+    U.uP.value=st.p;
+    const k=1-Math.exp(-dt*2.1), P=POSE[st.to], C=COL[st.to];
+    U.uA.value.lerp(C[0],k*1.2); U.uB.value.lerp(C[1],k*1.2);
+    cur.rx+=(P.rx-cur.rx)*k; cur.ry+=(P.ry-cur.ry)*k; cur.rz+=(P.rz-cur.rz)*k;
+    cur.x+=(tgt.x-cur.x)*k; cur.y+=(tgt.y-cur.y)*k; cur.dim+=(tgt.dim-cur.dim)*k;
+    const baseZ=P.z*fit*(1-tgt.zoom*.5);
+    cur.z+=(baseZ-cur.z)*k;
+    cur.spin+=((P.spin||0)-cur.spin)*k; cur.roll+=((P.roll||0)-cur.roll)*k;
+    if(!REDUCE){ spinAcc+=cur.spin*dt; rollAcc+=cur.roll*dt; }
+    cmx+=(mx-cmx)*.05; cmy+=(my-cmy)*.05;
+    group.rotation.set(cur.rx+cmy*.14+tgt.zoom*.22,cur.ry+cmx*.2+spinAcc,cur.rz+rollAcc);
+    group.position.set(cur.x,cur.y,0);
+    cam.position.set(0,0,cur.z);
+    U.uFocus.value=cur.z;
+    U.uDim.value=cur.dim;
+    renderer.render(scene,cam);
+  }
+  requestAnimationFrame(loop);
+  return { setShape, tgt, st };
+})();
+
+/* ============================================================
+   SCROLL + INTRO
+   ============================================================ */
+function layoutFrom(el){
+  const n=IS_NARROW(), d=el.dataset;
+  return { x:parseFloat(n?d.mx:d.lx)||0, y:parseFloat(n?d.my:d.ly)||0, dim:parseFloat(d.dim)||1, zoom:0 };
+}
+function activate(el){
+  if(Stage){ const L=layoutFrom(el); Object.assign(Stage.tgt,{x:L.x,y:L.y,dim:L.dim}); Stage.setShape(+el.dataset.shape); }
+  const chip=$("#chip"); chip.textContent=el.dataset.label||""; chip.classList.toggle("hide",!el.dataset.label||el.classList.contains("hero"));
+}
+
+(function(){
+  const hasG=window.gsap&&window.ScrollTrigger;
+  const secs=$$("[data-shape]");
+
+  if(!hasG){
+    /* Fallback without GSAP: content stays fully visible and shapes still change. */
+    const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) activate(e.target); }),{rootMargin:"-45% 0px -45% 0px"});
+    secs.forEach(s=>io.observe(s));
+    $("#loader").remove();
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+  if(window.Lenis&&!REDUCE){
+    const lenis=new Lenis({lerp:.1,wheelMultiplier:1});
+    window.__lenis=lenis;
+    lenis.on("scroll",ScrollTrigger.update);
+    gsap.ticker.add(t=>lenis.raf(t*1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  secs.forEach(el=>ScrollTrigger.create({trigger:el,start:"top 55%",end:"bottom 45%",
+    onToggle:s=>{ if(s.isActive) activate(el); }}));
+
+  /* nav swap */
+  ScrollTrigger.create({start:()=>innerHeight*.7,end:()=>"+="+(document.documentElement.scrollHeight*4),onToggle:s=>{
+    $("#nav").classList.toggle("hide",s.isActive);
+    $("#compact").classList.toggle("show",s.isActive);
+  }});
+
+  /* row hover changes the shape behind the list */
+  $$(".row").forEach(r=>{
+    const sh=+r.dataset.rowShape;
+    r.addEventListener("pointerenter",e=>{ if(e.pointerType==="mouse"&&Stage) Stage.setShape(sh); });
+    r.addEventListener("toggle",()=>ScrollTrigger.refresh());
+  });
+
+  if(REDUCE){ $("#loader").remove(); activate(secs[0]); return; }
+
+  /* statement: words light up, camera pushes into the chip */
+  const words=$$("#bigline .w");
+  gsap.set(words,{opacity:.13});
+  gsap.to(words,{opacity:1,stagger:.1,ease:"none",scrollTrigger:{trigger:".statement",start:"top top",end:"bottom 115%",scrub:.6}});
+  ScrollTrigger.create({trigger:".statement",start:"top bottom",end:"bottom top",scrub:true,onUpdate:s=>{
+    if(Stage){ const p=s.progress; Stage.tgt.zoom=Math.sin(Math.min(p*1.25,1)*Math.PI*.5)*(p>.86?Math.max(0,1-(p-.86)/.14):1); }
+  }});
+
+  /* chapter reveals */
+  $$(".chapter").forEach(ch=>{
+    const stick=$(".chapter__stick",ch);
+    const tl=gsap.timeline({scrollTrigger:{trigger:ch,start:"top 62%",toggleActions:"play none none reverse"}});
+    tl.from($$(".l>span",ch),{yPercent:112,duration:1.05,stagger:.08,ease:"expo.out"})
+      .from([$(".ch-meta",ch),$(".ch-body",ch)],{opacity:0,y:18,duration:.8,stagger:.1,ease:"power2.out"},.2)
+      .from($$(".co",ch),{opacity:0,x:-14,duration:.8,stagger:.09,ease:"power2.out"},.34);
+    gsap.to(stick,{opacity:0,ease:"none",scrollTrigger:{trigger:ch,start:"bottom 128%",end:"bottom 100%",scrub:true}});
+  });
+
+  /* section headings and rows */
+  $$(".sec__head .l>span").forEach(n=>gsap.from(n,{yPercent:112,duration:1.05,ease:"expo.out",scrollTrigger:{trigger:n.parentNode,start:"top 90%",toggleActions:"play none none reverse"}}));
+  $$(".row").forEach(r=>gsap.from(r,{opacity:0,y:20,duration:.7,ease:"power2.out",scrollTrigger:{trigger:r,start:"top 96%",once:true}}));
+  $$("[data-mq]").forEach(m=>{
+    const dir=+m.dataset.mq;
+    gsap.fromTo(m,{xPercent:dir<0?0:-30},{xPercent:dir<0?-30:0,ease:"none",scrollTrigger:{trigger:"#stack",start:"top bottom",end:"bottom top",scrub:.8}});
+  });
+  gsap.from(".mail",{yPercent:30,opacity:0,duration:1.1,ease:"expo.out",scrollTrigger:{trigger:".contact",start:"top 60%",toggleActions:"play none none reverse"}});
+
+  /* hero parallax out */
+  gsap.to(".hero h1",{yPercent:-16,opacity:0,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom 25%",scrub:true}});
+  gsap.to(".hero [data-fade]",{opacity:0,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"35% top",scrub:true}});
+
+  /* loader, then intro */
+  const heroLines=$$(".hero .l>span"), fades=$$(".hero [data-fade]");
+  gsap.set(heroLines,{yPercent:112}); gsap.set(fades,{autoAlpha:0});
+  const loader=$("#loader"), nEl=$("#loaderN"), li=$$("li",loader);
+  const intro=()=>{
+    gsap.timeline()
+      .to(loader,{yPercent:-100,duration:.9,ease:"expo.inOut",onComplete:()=>loader.remove()})
+      .to(heroLines,{yPercent:0,duration:1.25,stagger:.09,ease:"expo.out"},.4)
+      .to(fades,{autoAlpha:1,duration:.9,stagger:.08,clearProps:"visibility",onComplete:()=>{ gsap.set(fades,{clearProps:"opacity"}); ScrollTrigger.refresh(); }},1);
+  };
+  const T0=performance.now(), DUR=1500;
+  (function run(){
+    const p=Math.min((performance.now()-T0)/DUR,1), e=1-Math.pow(1-p,2.4);
+    nEl.textContent=Math.round(e*100);
+    li.forEach((n,i)=>n.classList.toggle("on",e>=i/li.length));
+    if(p<1) requestAnimationFrame(run); else setTimeout(intro,140);
+  })();
+  setTimeout(()=>{ if(document.body.contains(loader)&&!gsap.isTweening(loader)) intro(); },4000);
+  activate(secs[0]);
+})();
+</script>
+</body>
+</html>
+
